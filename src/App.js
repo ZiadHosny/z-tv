@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProdectedRoute';
@@ -10,7 +10,8 @@ import { AuthContextProvider } from './context/AuthContext';
 
 const App = () => {
   return (
-    <>
+
+    <BrowserRouter basename='Netflix'>
       <AuthContextProvider>
         <Navbar />
         <Routes>
@@ -28,7 +29,7 @@ const App = () => {
           />
         </Routes>
       </AuthContextProvider>
-    </>
+    </BrowserRouter>
   );
 };
 
