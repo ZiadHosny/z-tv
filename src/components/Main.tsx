@@ -1,25 +1,19 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import Requests from '../Requests';
+import { useState, useEffect } from 'react';
+import { requests } from '../Requests';
+import { truncateString } from '../utils/truncateString';
+import { MovieType } from '../utils/types';
 
-const Main = () => {
-  const [movies, setMovies] = useState([]);
+export const Main = () => {
+  const [movies, setMovies] = useState<MovieType[]>([]);
 
   const movie = movies[Math.floor(Math.random() * movies.length)];
 
   useEffect(() => {
-    axios.get(Requests.requestPopular).then((res) => {
+    axios.get(requests.requestPopular).then((res) => {
       setMovies(res.data.results);
     });
   }, []);
-
-  const truncateString = (str, num) => {
-    if (str.length > num) {
-      return str.slice(0, num) + '...';
-    } else {
-      return str;
-    }
-  };
 
   return movie ? (
     <div className="w-full h-[600px] text-white">
@@ -44,12 +38,10 @@ const Main = () => {
             Released: {movie.release_date}
           </p>
           <p className="w-full md:max-w-[70%] lg:max-w-[50%] xl:max-w-[35%] text-gray-200">
-            {truncateString(movie.overview, 150)}
+            {truncateString({ str: movie.overview, num: 150 })}
           </p>
         </div>
       </div>
     </div>
   ) : null;
 };
-
-export default Main;

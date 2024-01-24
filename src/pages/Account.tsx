@@ -1,7 +1,6 @@
-import React from 'react';
 import SavedShows from '../components/SavedShows';
 
-function Account() {
+export const Account = () => {
   return (
     <>
       <div className="w-full text-white">
@@ -21,4 +20,3 @@ function Account() {
   );
 }
 
-export default Account;

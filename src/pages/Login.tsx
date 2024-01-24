@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserAuth } from '../context/AuthContext';
 
-const Signup = () => {
+export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { signUp } = UserAuth();
+  const [error, setError] = useState<any>('');
+  const { logIn } = UserAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setError('');
     try {
-      await signUp(email, password);
+      await logIn(email, password);
       navigate('/');
-    } catch (error) {
-      console.log(error);
+    } catch {
+      setError(error?.message);
     }
   };
 
@@ -29,7 +31,7 @@ const Signup = () => {
       <div className="fixed w-full px-4 py-24 z-50">
         <div className="max-w-[450px] h-[500px] mx-auto bg-black/75 text-white">
           <div className="max-w-[320px] mx-auto py-16">
-            <h1 className="text-3xl font-bold">Sign Up</h1>
+            <h1 className="text-3xl font-bold">Sign In</h1>
             <form onSubmit={handleSubmit} className="w-full flex flex-col py-4">
               <input
                 onChange={(e) => setEmail(e.target.value)}
@@ -46,7 +48,7 @@ const Signup = () => {
                 autoComplete="current-password"
               />
               <button className="bg-red-600 py-3 my-6 rounded font-bold">
-                Sign Up
+                Sign In
               </button>
               <div className="flex justify-between items-center text-sm text-gray-600">
                 <p>
@@ -56,10 +58,8 @@ const Signup = () => {
                 <p>Need Help?</p>
               </div>
               <p className="py-8">
-                <span className="text-gray-600">
-                  Already subscribed to Netflix?
-                </span>
-                <Link to="/login">Sign In</Link>
+                <span className="text-gray-600">New to ZTV? </span>
+                <Link to="/signup"> Sign Up</Link>
               </p>
             </form>
           </div>
@@ -68,5 +68,3 @@ const Signup = () => {
     </div>
   );
 };
-
-export default Signup;

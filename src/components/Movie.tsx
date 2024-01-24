@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { UserAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { arrayUnion, doc, updateDoc, getDoc } from 'firebase/firestore';
+import { MovieType } from '../utils/types';
 
-const Movie = ({ item }) => {
+export const Movie = ({ item }: { item: MovieType }) => {
   const [like, setLike] = useState(false);
 
   const { user } = UserAuth();
@@ -26,7 +27,7 @@ const Movie = ({ item }) => {
       } else {
         try {
           let dataFromDB = await getDoc(movieID);
-          const result = dataFromDB.data().savedShows.filter((e) => {
+          const result = dataFromDB.data()?.savedShows.filter((e: any) => {
             return item.id !== e.id;
           });
 
@@ -43,7 +44,7 @@ const Movie = ({ item }) => {
   const find = async () => {
     if (user?.email) {
       let dataFromDB = await getDoc(movieID);
-      let find = dataFromDB.data().savedShows.find((e) => {
+      let find = dataFromDB.data()?.savedShows.find((e: any) => {
         return e.id === item.id;
       });
       if (find) {
@@ -55,7 +56,7 @@ const Movie = ({ item }) => {
   };
 
   useEffect(() => {
-    find().then((e) => {
+    find().then((e: any) => {
       setLike(e);
     });
   }, [find]);
@@ -82,5 +83,3 @@ const Movie = ({ item }) => {
     </div>
   );
 };
-
-export default Movie;
