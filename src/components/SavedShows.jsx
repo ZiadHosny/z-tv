@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
-import { UserAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { updateDoc, doc, onSnapshot } from 'firebase/firestore';
 import { AiOutlineClose } from 'react-icons/ai';
+import { useAppSelector } from '../store/hooks';
 
 const SavedShows = () => {
   const [movies, setMovies] = useState([]);
-  const { user } = UserAuth();
+  const user = useAppSelector((state) => state.auth.user);
   const movieID = doc(db, 'users', `${user?.email}`);
 
   const slideLeft = () => {

@@ -1,21 +1,34 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserAuth } from '../context/AuthContext';
+import { toast } from 'react-toastify';
+import { errorMsg, loadingMsg, signUpMsg } from '../utils/messages';
+import { auth, db } from '../firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 
 export const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { signUp } = UserAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    try {
-      await signUp(email, password);
-      navigate('/');
-    } catch (error) {
-      console.log(error);
-    }
+
+    toast.promise(async () => {
+      await createUserWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db, 'users', email), { savedShows: [] });
+    }, {
+      pending: loadingMsg,
+      success: signUpMsg,
+      error: {
+        render({ toastProps }) {
+          const error = toastProps.data as any
+          return error.code ?? errorMsg
+        },
+      },
+    })
+
+    navigate('/');
   };
 
   return (

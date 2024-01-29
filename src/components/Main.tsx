@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { requests } from '../Requests';
 import { truncateString } from '../utils/truncateString';
 import { MovieType } from '../utils/types';
+import { requests } from '../utils/requests';
 
 export const Main = () => {
   const [movies, setMovies] = useState<MovieType[]>([]);

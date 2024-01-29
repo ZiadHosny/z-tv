@@ -1,17 +1,31 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { UserAuth } from '../context/AuthContext';
+import { useAppSelector } from '../store/hooks';
+import {  signOut } from 'firebase/auth';
+import { toast } from 'react-toastify';
+import { auth } from '../firebase';
+import { errorMsg, loadingMsg, logoutMsg } from '../utils/messages';
 
 export const Navbar = () => {
-  const { user, logOut } = UserAuth();
+  const user = useAppSelector((state) => state.auth.user);
+  
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    try {
-      await logOut();
-      navigate('/');
-    } catch (error) {
-      console.log(error);
-    }
+
+    toast.promise(async () => {
+      await signOut(auth);
+    }, {
+      pending: loadingMsg,
+      success: logoutMsg,
+      error: {
+        render({ toastProps }) {
+          const error = toastProps.data as any
+          return error.code ?? errorMsg
+        },
+      },
+    })
+
+    navigate('/');
   };
 
   return (

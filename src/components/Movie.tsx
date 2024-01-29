@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
-import { UserAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { arrayUnion, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { MovieType } from '../utils/types';
+import { useAppSelector } from '../store/hooks';
 
 export const Movie = ({ item }: { item: MovieType }) => {
+  const user = useAppSelector((state) => state.auth.user);
+
   const [like, setLike] = useState(false);
 
-  const { user } = UserAuth();
-  const movieID = doc(db, 'users', `${user?.email}`);
+  const movieID = user.email ? doc(db, 'users', `${user.email}`) : undefined;
 
   const saveShow = async () => {
-    if (user?.email) {
+    if (movieID) {
       setLike(!like);
 
       if (!like) {
@@ -41,25 +42,26 @@ export const Movie = ({ item }: { item: MovieType }) => {
     }
   };
 
-  const find = async () => {
-    if (user?.email) {
-      let dataFromDB = await getDoc(movieID);
-      let find = dataFromDB.data()?.savedShows.find((e: any) => {
-        return e.id === item.id;
-      });
-      if (find) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  };
 
   useEffect(() => {
+    const find = async () => {
+      if (movieID) {
+        let dataFromDB = await getDoc(movieID);
+        let find = dataFromDB.data()?.savedShows.find((e: any) => {
+          return e.id === item.id;
+        });
+        if (find) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    };
+
     find().then((e: any) => {
       setLike(e);
     });
-  }, [find]);
+  }, [movieID, item.id]);
 
   return (
     <div className="w-[160px] sm:w-[200px] md:w-[240px] lg:w-[280px] inline-block cursor-pointer relative p-2">
